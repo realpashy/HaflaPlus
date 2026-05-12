@@ -295,3 +295,41 @@
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.556 0 0);
 }
+
+.ticket-edge-hole,
+.ticket-edge-hole-left {
+  position: absolute;
+  z-index: 1;
+  border-radius: 9999px;
+  background: #fbf6ee;
+}
+
+.ticket-edge-hole {
+  left: 50%;
+  height: 44px;
+  width: 44px;
+  transform: translateX(-50%);
+}
+
+.ticket-edge-hole-top {
+  top: -22px;
+}
+
+.ticket-edge-hole-bottom {
+  bottom: -22px;
+}
+
+.ticket-edge-hole-left {
+  height: 42px;
+  width: 42px;
+}
+
+.ticket-edge-hole-left-top {
+  left: -21px;
+  top: 28px;
+}
+
+.ticket-edge-hole-left-bottom {
+  left: -21px;
+  bottom: 28px;
+}

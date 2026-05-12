@@ -1,9 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { ShieldCheck, Plus, Minus } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { Lock, Minus, Plus, ShieldCheck } from "lucide-react";
 import { TicketType } from "@/types";
 import { useCartStore } from "@/store/useStore";
 
@@ -14,117 +12,104 @@ interface TicketModuleProps {
 export function TicketModule({ tickets }: TicketModuleProps) {
   const { selectedTickets, setTicketQuantity } = useCartStore();
   const [waitlistEmail, setWaitlistEmail] = useState("");
-  const [waitlistSubmitted, setWaitlistSubmitted] = useState<string | null>(null);
+  const [waitlistSubmitted, setWaitlistSubmitted] = useState(false);
 
-  const handleWaitlist = (ticketId: string) => {
-    if (waitlistEmail) {
-      setWaitlistSubmitted(ticketId);
-      setWaitlistEmail("");
-    }
-  };
-
-  const totalQuantity = Object.values(selectedTickets).reduce((a, b) => a + b, 0);
-  const subtotal = tickets.reduce((total, ticket) => {
-    const qty = selectedTickets[ticket.id] || 0;
-    return total + (ticket.price * qty);
-  }, 0);
-  
-  const serviceFee = totalQuantity > 0 ? 10 * totalQuantity : 0; // Mock fee 10 ILS per ticket
+  const totalQuantity = Object.values(selectedTickets).reduce((sum, qty) => sum + qty, 0);
+  const subtotal = tickets.reduce((sum, ticket) => sum + ticket.price * (selectedTickets[ticket.id] || 0), 0);
+  const serviceFee = totalQuantity > 0 ? totalQuantity * 10 : 0;
   const finalTotal = subtotal + serviceFee;
 
   return (
-    <div className="bg-ticket-bg text-ticket-text rounded-[2rem] overflow-hidden shadow-float relative ticket-notch-both ticket-dashed-border">
-      {/* Secure Badge */}
-      <div className="absolute top-0 left-0 bg-secondary text-secondary-foreground px-4 py-1.5 rounded-br-2xl text-xs font-medium flex items-center gap-1.5 z-10">
-        <ShieldCheck className="w-4 h-4" />
-        حجز آمن
-      </div>
+    <section className="relative overflow-hidden rounded-[34px] bg-[#1C1A1D] px-4 py-5 text-white shadow-[0_25px_70px_rgba(17,15,20,0.28)] md:px-8 md:py-8">
+      <div className="ticket-edge-hole ticket-edge-hole-top" />
+      <div className="ticket-edge-hole ticket-edge-hole-bottom" />
+      <div className="ticket-edge-hole-left ticket-edge-hole-left-top" />
+      <div className="ticket-edge-hole-left ticket-edge-hole-left-bottom" />
 
-      <div className="p-6 md:p-8 flex flex-col md:flex-row h-full">
-        {/* Left Side (Tickets List) */}
-        <div className="flex-1 space-y-6 relative md:pl-8">
-          <h2 className="text-2xl font-bold mb-6 text-center md:text-start">اختر تذكرتك</h2>
-          
-          <div className="space-y-4">
+      <div className="grid gap-8 xl:grid-cols-[minmax(0,1.7fr)_300px] xl:[direction:ltr]">
+        <div className="relative xl:[direction:rtl]">
+          <div className="mb-5 flex items-center justify-between">
+            <div className="rounded-full bg-white/10 px-4 py-2 text-xs font-medium text-white/90">
+              <span className="inline-flex items-center gap-1.5">
+                <ShieldCheck className="h-3.5 w-3.5" />
+                Secure موافقة
+              </span>
+            </div>
+            <h2 className="text-3xl font-extrabold tracking-tight">اختر تذكرتك</h2>
+          </div>
+
+          <div className="space-y-3">
             {tickets.map((ticket, index) => {
               const qty = selectedTickets[ticket.id] || 0;
-              const isSelected = qty > 0;
+              const isSoldOut = ticket.isSoldOut;
 
               return (
-                <div 
-                  key={ticket.id} 
-                  className={`flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 rounded-xl border transition-colors ${
-                    isSelected ? "border-primary bg-primary/5" : "border-ticket-border bg-ticket-bg/50"
-                  }`}
+                <div
+                  key={ticket.id}
+                  className="rounded-[22px] border border-white/8 bg-white/[0.04] px-4 py-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]"
                 >
-                  <div className="flex-1">
-                    <div className="flex items-center gap-2 mb-1">
-                      <span className="font-bold text-lg">{index + 1}. {ticket.name} — {ticket.price} ₪</span>
-                      {ticket.isSoldOut && (
-                        <span className="bg-destructive/20 text-destructive text-xs px-2 py-0.5 rounded-full font-medium">نفدت التذاكر</span>
-                      )}
-                    </div>
-                    <p className="text-sm text-ticket-muted">{ticket.description}</p>
-                    {ticket.requiresStudentId && (
-                      <p className="text-xs text-warning mt-1">يتطلب بطاقة طالب</p>
-                    )}
-                  </div>
-
-                  <div className="flex items-center justify-between sm:justify-end gap-6">
-                    {ticket.isSoldOut ? (
-                      waitlistSubmitted === ticket.id ? (
-                        <div className="text-success text-sm font-medium bg-success/10 px-3 py-1.5 rounded-full">
-                          تم التسجيل في قائمة الانتظار
-                        </div>
-                      ) : (
-                        <div className="flex items-center gap-2 w-full sm:w-auto">
-                          <Input 
-                            placeholder="Email أو رقم الهاتف" 
-                            className="h-9 bg-black/20 border-ticket-border text-white placeholder:text-ticket-muted w-full sm:w-48 text-xs"
-                            value={waitlistEmail}
-                            onChange={(e) => setWaitlistEmail(e.target.value)}
-                          />
-                          <Button size="sm" variant="secondary" className="h-9 whitespace-nowrap text-xs" onClick={() => handleWaitlist(ticket.id)}>
-                            أخبرني
-                          </Button>
-                        </div>
-                      )
-                    ) : (
-                      <div className="flex flex-col items-center gap-1">
-                        <div className="flex items-center gap-3 bg-black/30 rounded-full p-1 border border-ticket-border">
-                          <Button 
-                            variant="ghost" 
-                            size="icon" 
-                            className="h-8 w-8 rounded-full hover:bg-white/10 hover:text-white"
-                            onClick={() => setTicketQuantity(ticket.id, qty - 1)}
-                            disabled={qty === 0}
-                          >
-                            <Minus className="h-4 w-4" />
-                          </Button>
-                          <span className="w-4 text-center font-bold text-lg">{qty}</span>
-                          <Button 
-                            variant="ghost" 
-                            size="icon" 
-                            className="h-8 w-8 rounded-full hover:bg-white/10 hover:text-white"
-                            onClick={() => setTicketQuantity(ticket.id, qty + 1)}
-                            disabled={qty >= ticket.quantityRemaining}
-                          >
-                            <Plus className="h-4 w-4" />
-                          </Button>
-                        </div>
-                        {ticket.quantityRemaining <= 10 && qty < ticket.quantityRemaining && (
-                          <span className="text-xs text-warning font-medium">تبقى {ticket.quantityRemaining} فقط</span>
-                        )}
-                        {qty >= ticket.quantityRemaining && ticket.quantityRemaining > 0 && (
-                          <span className="text-xs text-ticket-muted">الحد الأقصى</span>
+                  <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+                    <div className="min-w-0 flex-1">
+                      <div className="mb-1 flex items-center gap-2 text-[1.05rem] font-semibold md:text-[1.2rem]">
+                        <span className="text-white/78">{index + 1}.</span>
+                        <span>{ticket.name}</span>
+                        <span className="text-white/90">— {ticket.price} ₪</span>
+                        {isSoldOut && (
+                          <span className="rounded-full bg-[#E77878] px-2.5 py-1 text-xs font-bold text-white">نفدت التذاكر</span>
                         )}
                       </div>
-                    )}
-                    
-                    {!ticket.isSoldOut && (
-                      <div className="text-end hidden sm:block min-w-[80px]">
-                         <div className="font-bold text-xl">{ticket.price} ₪</div>
-                         <div className="text-xs text-ticket-muted">لكل تذكرة</div>
+                      <p className="text-sm text-white/65">{ticket.description}</p>
+                      {!isSoldOut && ticket.quantityRemaining <= 10 && (
+                        <p className="mt-1 text-sm font-semibold text-[#FF8778]">تبقّى {ticket.quantityRemaining} فقط</p>
+                      )}
+                    </div>
+
+                    {isSoldOut ? (
+                      <div className="flex w-full flex-col gap-2 md:w-[260px]">
+                        <div className="text-sm text-white/55">تواصلني بعلاقة/الصوت.</div>
+                        <div className="flex gap-2">
+                          <input
+                            value={waitlistEmail}
+                            onChange={(event) => setWaitlistEmail(event.target.value)}
+                            placeholder="Email/urloine waitlist"
+                            className="min-w-0 flex-1 rounded-full border border-white/10 bg-white/10 px-4 py-2 text-sm text-white placeholder:text-white/35 focus:outline-none"
+                          />
+                          <button
+                            type="button"
+                            onClick={() => setWaitlistSubmitted(true)}
+                            className="rounded-full bg-white px-4 py-2 text-sm font-bold text-black"
+                          >
+                            أخبرني عند التوفر
+                          </button>
+                        </div>
+                        {waitlistSubmitted && <p className="text-xs text-[#DFFF6A]">تم حفظ طلب الانتظار.</p>}
+                      </div>
+                    ) : (
+                      <div className="flex items-center gap-4 md:min-w-[210px] md:justify-end">
+                        <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-black/20 px-2 py-1">
+                          <button
+                            type="button"
+                            className="flex h-8 w-8 items-center justify-center rounded-full bg-white/6 text-white transition hover:bg-white/12"
+                            onClick={() => setTicketQuantity(ticket.id, qty - 1)}
+                            aria-label={`Decrease ${ticket.name}`}
+                          >
+                            <Minus className="h-4 w-4" />
+                          </button>
+                          <span className="w-5 text-center text-base font-bold">{qty}</span>
+                          <button
+                            type="button"
+                            className="flex h-8 w-8 items-center justify-center rounded-full bg-white/6 text-white transition hover:bg-white/12"
+                            onClick={() => setTicketQuantity(ticket.id, qty + 1)}
+                            aria-label={`Increase ${ticket.name}`}
+                          >
+                            <Plus className="h-4 w-4" />
+                          </button>
+                        </div>
+
+                        <div className="min-w-[70px] text-right">
+                          <div className="text-[1.05rem] font-semibold">{ticket.price} ₪</div>
+                          <div className="text-xs text-white/45">داخل السعر</div>
+                        </div>
                       </div>
                     )}
                   </div>
@@ -134,58 +119,56 @@ export function TicketModule({ tickets }: TicketModuleProps) {
           </div>
         </div>
 
-        {/* Right Side (Summary) - Desktop dashed separator */}
-        <div className="hidden md:block w-px bg-ticket-border mx-8 my-4 relative">
-            <div className="absolute top-0 -translate-y-1/2 -left-3 w-6 h-6 rounded-full bg-background"></div>
-            <div className="absolute bottom-0 translate-y-1/2 -left-3 w-6 h-6 rounded-full bg-background"></div>
-        </div>
-
-        {/* Mobile dashed separator */}
-        <div className="md:hidden h-px w-full bg-ticket-border my-6 relative ticket-dashed-border border-0">
-            <div className="absolute left-0 -translate-x-1/2 -top-3 w-6 h-6 rounded-full bg-background"></div>
-            <div className="absolute right-0 translate-x-1/2 -top-3 w-6 h-6 rounded-full bg-background"></div>
-        </div>
-
-        {/* Summary Area */}
-        <div className="md:w-64 flex flex-col justify-between md:pr-4">
-          <div className="text-center md:text-start flex flex-col items-center md:items-start gap-4">
-             {/* Mock Barcode */}
-             <div className="hidden md:block w-full">
-                <div className="flex gap-1 justify-center opacity-30 h-12 mb-2">
-                   {[...Array(20)].map((_, i) => (
-                     <div key={i} className={`bg-white h-full ${i % 3 === 0 ? 'w-2' : i % 2 === 0 ? 'w-1' : 'w-[2px]'}`}></div>
-                   ))}
-                </div>
-                <div className="text-center text-xs text-ticket-muted tracking-widest font-mono">TICKET NUMBER</div>
-             </div>
-
-             <div className="w-full text-center mt-4">
-                <div className="text-lg text-ticket-muted mb-1">{totalQuantity} تذاكر</div>
-                <div className="text-3xl font-bold mb-1">المجموع: {finalTotal} ₪</div>
-                <div className="text-xs text-ticket-muted">يشمل {serviceFee} ₪ رسوم خدمة</div>
-             </div>
+        <div className="relative xl:[direction:rtl]">
+          <div className="hidden h-full xl:block">
+            <div className="absolute bottom-0 right-auto top-0 w-px border-l border-dashed border-white/16" />
           </div>
-
-          <div className="mt-8 space-y-4">
-             <Button 
-               size="lg" 
-               className="w-full rounded-full text-lg h-14 bg-primary text-primary-foreground hover:bg-primary-hover transition-colors shadow-[0_0_20px_rgba(132,204,22,0.3)]"
-               disabled={totalQuantity === 0}
-             >
-               احجز تذكرتك الآن
-             </Button>
-             
-             <div className="flex items-center justify-center gap-2 text-ticket-muted text-xs">
-                <span>دفع آمن ومشفّر</span>
-                <div className="flex gap-1">
-                   <div className="w-8 h-5 bg-white/10 rounded flex items-center justify-center text-[8px] font-bold">Pay</div>
-                   <div className="w-8 h-5 bg-white/10 rounded flex items-center justify-center text-[8px] font-bold">G Pay</div>
+          <div className="rounded-[26px] bg-[#171518] p-6 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] xl:h-full">
+            <div className="mb-8 space-y-4">
+              <div className="flex items-start justify-between gap-4">
+                <div className="space-y-1">
+                  <div className="text-[2rem] font-extrabold">{totalQuantity} تذاكر</div>
+                  <div className="text-sm text-white/50">Ticket number</div>
                 </div>
-             </div>
+                <div className="rounded-[18px] border border-white/10 bg-white/4 p-3">
+                  <div className="mb-2 flex h-12 gap-1">
+                    {Array.from({ length: 18 }).map((_, index) => (
+                      <span key={index} className={`h-full ${index % 3 === 0 ? "w-1.5" : "w-0.5"} bg-white/85`} />
+                    ))}
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="grid grid-cols-5 gap-1">
+                      {Array.from({ length: 25 }).map((_, index) => (
+                        <span key={index} className={`h-1.5 w-1.5 rounded-[2px] ${index % 4 === 0 ? "bg-white/90" : "bg-white/20"}`} />
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="space-y-1 text-right">
+                <div className="text-[2rem] font-extrabold">{finalTotal} ₪ المجموع:</div>
+                <div className="text-sm text-white/55">يشمل ضريبة ورسوم الخدمة</div>
+              </div>
+            </div>
+
+            <button
+              type="button"
+              className="w-full rounded-[20px] bg-[linear-gradient(180deg,#7C59FF_0%,#5A36F4_100%)] px-6 py-4 text-xl font-extrabold text-white shadow-[0_14px_32px_rgba(98,70,255,0.38)] transition hover:translate-y-[-1px] hover:shadow-[0_18px_42px_rgba(98,70,255,0.42)] disabled:cursor-not-allowed disabled:opacity-50"
+              disabled={totalQuantity === 0}
+            >
+              احجز تذكرتك الآن
+            </button>
+
+            <div className="mt-4 text-center text-sm text-white/62">دفع آمن ومشفّر</div>
+            <div className="mt-3 flex items-center justify-center gap-2">
+              <div className="rounded-lg bg-white px-2 py-1 text-xs font-semibold text-black"> Pay</div>
+              <div className="rounded-lg bg-white px-2 py-1 text-xs font-semibold text-black">G Pay</div>
+              <div className="rounded-lg bg-white px-2 py-1 text-xs font-semibold text-black">Mastercard</div>
+            </div>
           </div>
         </div>
-
       </div>
-    </div>
+    </section>
   );
 }

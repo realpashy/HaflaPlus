@@ -1,0 +1,69 @@
+<svg width="1600" height="900" viewBox="0 0 1600 900" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1600" height="900" rx="44" fill="url(#bg)"/>
+  <ellipse cx="822" cy="746" rx="576" ry="116" fill="#10090A" fill-opacity=".72"/>
+  <rect x="238" y="160" width="1124" height="482" rx="26" fill="url(#stage)"/>
+  <rect x="316" y="146" width="968" height="26" rx="13" fill="#F5C693" fill-opacity=".28"/>
+  <g opacity=".78">
+    <path d="M412 120L516 494" stroke="url(#beam)" stroke-width="18" stroke-linecap="round"/>
+    <path d="M556 108L638 490" stroke="url(#beam)" stroke-width="18" stroke-linecap="round"/>
+    <path d="M702 98L754 488" stroke="url(#beam)" stroke-width="18" stroke-linecap="round"/>
+    <path d="M846 102L856 488" stroke="url(#beam)" stroke-width="18" stroke-linecap="round"/>
+    <path d="M982 104L948 490" stroke="url(#beam)" stroke-width="18" stroke-linecap="round"/>
+    <path d="M1118 114L1048 494" stroke="url(#beam)" stroke-width="18" stroke-linecap="round"/>
+    <path d="M1256 128L1144 494" stroke="url(#beam)" stroke-width="18" stroke-linecap="round"/>
+  </g>
+  <g opacity=".8">
+    <circle cx="450" cy="168" r="13" fill="#FFD39A"/>
+    <circle cx="598" cy="160" r="13" fill="#FFD39A"/>
+    <circle cx="742" cy="150" r="13" fill="#FFD39A"/>
+    <circle cx="850" cy="152" r="13" fill="#FFD39A"/>
+    <circle cx="964" cy="156" r="13" fill="#FFD39A"/>
+    <circle cx="1108" cy="164" r="13" fill="#FFD39A"/>
+    <circle cx="1248" cy="176" r="13" fill="#FFD39A"/>
+  </g>
+  <g opacity=".55">
+    <rect x="332" y="342" width="932" height="214" rx="16" fill="url(#crowdGlow)"/>
+  </g>
+  <g fill="#1B1010">
+    <path d="M286 686C330 636 372 620 442 608C530 592 606 622 684 654C760 686 832 718 930 722C1042 726 1124 680 1212 650C1280 628 1330 622 1384 648V776H286V686Z"/>
+    <path d="M216 712C260 678 294 668 352 662C426 654 496 680 564 706C634 732 706 760 806 768C918 776 1022 742 1102 716C1182 690 1264 676 1384 702V900H216V712Z"/>
+  </g>
+  <g fill="#2A1716">
+    <circle cx="356" cy="628" r="40"/>
+    <circle cx="448" cy="650" r="48"/>
+    <circle cx="564" cy="620" r="42"/>
+    <circle cx="648" cy="646" r="52"/>
+    <circle cx="768" cy="630" r="46"/>
+    <circle cx="890" cy="650" r="54"/>
+    <circle cx="1028" cy="626" r="48"/>
+    <circle cx="1166" cy="640" r="60"/>
+    <circle cx="1288" cy="628" r="44"/>
+  </g>
+  <g fill="#2B1817">
+    <rect x="596" y="520" width="18" height="84" rx="9"/>
+    <rect x="710" y="504" width="16" height="96" rx="8"/>
+    <rect x="846" y="510" width="18" height="94" rx="9"/>
+    <rect x="984" y="516" width="16" height="86" rx="8"/>
+    <rect x="1114" y="508" width="16" height="96" rx="8"/>
+  </g>
+  <defs>
+    <linearGradient id="bg" x1="800" y1="0" x2="800" y2="900" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#4B221C"/>
+      <stop offset=".37" stop-color="#241215"/>
+      <stop offset="1" stop-color="#140D11"/>
+    </linearGradient>
+    <linearGradient id="stage" x1="800" y1="160" x2="800" y2="642" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#5A261D"/>
+      <stop offset=".55" stop-color="#241112"/>
+      <stop offset="1" stop-color="#0E0A0D"/>
+    </linearGradient>
+    <linearGradient id="beam" x1="0" y1="0" x2="0" y2="1">
+      <stop stop-color="#FFD39A"/>
+      <stop offset="1" stop-color="#FFD39A" stop-opacity="0"/>
+    </linearGradient>
+    <radialGradient id="crowdGlow" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(798 448) rotate(90) scale(214 466)">
+      <stop stop-color="#F8B972" stop-opacity=".42"/>
+      <stop offset="1" stop-color="#F8B972" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+</svg>

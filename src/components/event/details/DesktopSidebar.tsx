@@ -1,5 +1,4 @@
-import { Calendar, MapPin, MessageCircle, Star, Users, ShieldCheck } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { CalendarDays, CheckCircle2, Clock3, MapPin, MessageCircle, ShieldCheck, Star, UserRound } from "lucide-react";
 import { Event, Organizer } from "@/types";
 import { formatDate, formatTime } from "@/lib/utils";
 
@@ -9,135 +8,99 @@ interface DesktopSidebarProps {
   locale: string;
 }
 
+function SidebarCard({ title, children }: { title: string; children: React.ReactNode }) {
+  return (
+    <section className="rounded-[28px] border border-[#EFE6D8] bg-white p-5 shadow-[0_12px_34px_rgba(97,66,29,0.08)]">
+      <h3 className="mb-4 text-[1.55rem] font-extrabold tracking-tight text-[#151515]">{title}</h3>
+      {children}
+    </section>
+  );
+}
+
 export function DesktopSidebar({ event, organizer, locale }: DesktopSidebarProps) {
   const eventDate = new Date(event.startsAt);
-  const formattedDate = formatDate(eventDate, locale === 'ar' ? 'ar-EG' : 'he-IL');
-  const formattedTime = formatTime(eventDate, locale === 'ar' ? 'ar-EG' : 'he-IL');
+  const formattedDate = formatDate(eventDate, locale === "ar" ? "ar-EG" : "he-IL");
+  const formattedTime = formatTime(eventDate, locale === "ar" ? "ar-EG" : "he-IL");
 
   return (
-    <div className="hidden lg:flex flex-col w-[320px] shrink-0 gap-6 sticky top-24 h-fit">
-      
-      <div className="bg-card rounded-2xl border p-5 shadow-sm">
-        <h3 className="font-bold text-lg mb-4">ملخص الفعالية</h3>
+    <aside className="hidden w-[310px] shrink-0 flex-col gap-4 xl:flex">
+      <SidebarCard title="Hafla+">
+        <div className="space-y-4 text-right">
+          <div className="border-b border-[#EFE9DF] pb-4 text-[2rem] font-extrabold text-[#151515]">{event.title}</div>
+          <div className="space-y-3 text-[1.1rem] text-[#222]">
+            <div className="flex items-center justify-between gap-3"><CalendarDays className="h-5 w-5 text-[#2A2A2A]" /><span>{formattedDate}</span></div>
+            <div className="flex items-center justify-between gap-3"><Clock3 className="h-5 w-5 text-[#2A2A2A]" /><span>{formattedTime}</span></div>
+            <div className="flex items-center justify-between gap-3"><MapPin className="h-5 w-5 text-[#2A2A2A]" /><span>{event.venueName}، {event.city}</span></div>
+            <div className="flex items-center justify-between gap-3"><CalendarDays className="h-5 w-5 text-[#2A2A2A]" /><span>{event.category}</span></div>
+            <div className="flex items-center justify-between gap-3"><UserRound className="h-5 w-5 text-[#2A2A2A]" /><span>{event.ageRestriction}</span></div>
+          </div>
+        </div>
+      </SidebarCard>
+
+      <SidebarCard title="الوجهة">
+        <div className="overflow-hidden rounded-[22px] border border-[#ECE4D8] bg-[#F8F5EF]">
+          <img src="/mock-map.svg" alt="Map preview" className="h-[190px] w-full object-cover" />
+        </div>
+        <div className="mt-3 text-right text-sm text-[#6D665D]">
+          <div className="font-semibold text-[#171717]">قاعة بايس، الناصرة</div>
+          <div>أقرب أماكن الوقوف على بعد 100م</div>
+        </div>
+        <div className="mt-4 flex gap-2">
+          <button type="button" className="flex-1 rounded-full bg-[#E6F5FF] px-4 py-2.5 text-sm font-bold text-[#2B5C7E]">افتح في Waze</button>
+          <button type="button" className="flex-1 rounded-full border border-[#E8E2D9] bg-white px-4 py-2.5 text-sm font-bold text-[#2E2A26]">Google Maps</button>
+        </div>
+      </SidebarCard>
+
+      <SidebarCard title="التقويم">
         <div className="space-y-3">
-          <div className="flex items-start gap-3">
-            <Calendar className="w-5 h-5 text-muted-foreground shrink-0 mt-0.5" />
-            <div className="text-sm">
-              <div className="font-medium">{formattedDate}</div>
-              <div className="text-muted-foreground">{formattedTime}</div>
-            </div>
+          <button type="button" className="w-full rounded-full border border-[#EAE2D7] bg-[#FAF7F1] px-4 py-3 text-base font-bold text-[#2D2925]">أضف إلى التقويم</button>
+          <div className="flex gap-2">
+            <button type="button" className="flex-1 rounded-full border border-[#EAE2D7] bg-white px-4 py-2.5 text-sm font-semibold text-[#2D2925]">Google Calendar</button>
+            <button type="button" className="flex-1 rounded-full border border-[#EAE2D7] bg-white px-4 py-2.5 text-sm font-semibold text-[#2D2925]">iCal</button>
           </div>
-          <div className="flex items-start gap-3">
-            <MapPin className="w-5 h-5 text-muted-foreground shrink-0 mt-0.5" />
-            <div className="text-sm">
-              <div className="font-medium">{event.venueName}</div>
-              <div className="text-muted-foreground">{event.city}</div>
-            </div>
-          </div>
-          <div className="flex items-center gap-3">
-            <Star className="w-5 h-5 text-muted-foreground shrink-0" />
-            <div className="text-sm font-medium">{event.category}</div>
-          </div>
-          {event.ageRestriction && (
-            <div className="flex items-center gap-3">
-              <Users className="w-5 h-5 text-muted-foreground shrink-0" />
-              <div className="text-sm font-medium">{event.ageRestriction}</div>
-            </div>
-          )}
         </div>
-      </div>
+      </SidebarCard>
 
-      <div className="bg-card rounded-2xl border p-5 shadow-sm">
-        <h3 className="font-bold text-lg mb-4">الموقع</h3>
-        <div className="w-full aspect-video bg-muted rounded-xl mb-4 overflow-hidden relative">
-           <div className="absolute inset-0 bg-primary/10 bg-cover bg-center opacity-50"></div>
-           <div className="absolute inset-0 flex items-center justify-center">
-             <MapPin className="w-8 h-8 text-primary drop-shadow-md" />
-           </div>
-        </div>
-        <p className="text-sm text-muted-foreground mb-4">{event.address}</p>
-        <div className="flex gap-2">
-          <Button variant="outline" size="sm" className="flex-1 text-xs h-8">Waze</Button>
-          <Button variant="outline" size="sm" className="flex-1 text-xs h-8">Google Maps</Button>
-        </div>
-      </div>
-
-      <div className="bg-card rounded-2xl border p-5 shadow-sm">
-        <h3 className="font-bold text-lg mb-4">أضف إلى التقويم</h3>
-        <div className="flex gap-2">
-          <Button variant="outline" size="sm" className="flex-1 text-xs h-8 gap-2">
-            <Calendar className="w-3 h-3" />
-            Google
-          </Button>
-          <Button variant="outline" size="sm" className="flex-1 text-xs h-8 gap-2">
-            <Calendar className="w-3 h-3" />
-            iCal
-          </Button>
-        </div>
-      </div>
-
-      <Button className="w-full rounded-2xl h-14 bg-[#25D366] hover:bg-[#20bd5a] text-white shadow-md gap-2 text-base font-bold">
-        <MessageCircle className="w-5 h-5" />
+      <button
+        type="button"
+        className="flex items-center justify-center gap-3 rounded-[22px] bg-[#2FD168] px-5 py-4 text-[1.65rem] font-extrabold text-white shadow-[0_16px_42px_rgba(47,209,104,0.28)]"
+      >
+        <MessageCircle className="h-8 w-8" />
         تحتاج مساعدة؟ واتساب
-      </Button>
+      </button>
 
-      <div className="bg-card rounded-2xl border p-5 shadow-sm">
-        <h3 className="font-bold text-lg mb-4">لماذا تحجز معنا؟</h3>
-        <ul className="space-y-3 text-sm">
-          <li className="flex items-center gap-2">
-            <ShieldCheck className="w-4 h-4 text-primary" />
-            تذاكر أصلية 100%
-          </li>
-          <li className="flex items-center gap-2">
-            <ShieldCheck className="w-4 h-4 text-primary" />
-            استرداد حسب الشروط
-          </li>
-          <li className="flex items-center gap-2">
-            <ShieldCheck className="w-4 h-4 text-primary" />
-            دعم قبل وأثناء الحدث
-          </li>
-          <li className="flex items-center gap-2">
-            <ShieldCheck className="w-4 h-4 text-primary" />
-            دفع آمن ومشفّر
-          </li>
-        </ul>
-      </div>
-
-      <div className="bg-card rounded-2xl border p-5 shadow-sm">
-        <div className="flex items-center justify-between mb-4">
-          <h3 className="font-bold text-lg">المنظّم</h3>
-          {organizer.verified && (
-            <div className="bg-success/10 text-success text-[10px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1">
-              <ShieldCheck className="w-3 h-3" />
-              منظم معتمد
+      <SidebarCard title="Trust">
+        <div className="space-y-3 text-sm text-[#2A2A2A]">
+          {["تذاكر أصلية . دفع آمن . مأمون", "يدعم الدعم . دعم واتساب"].map((item) => (
+            <div key={item} className="flex items-center gap-2">
+              <CheckCircle2 className="h-4 w-4 text-[#7CCB63]" />
+              <span>{item}</span>
             </div>
-          )}
+          ))}
         </div>
-        
-        <div className="flex items-center gap-4 mb-4">
-          <div className="w-12 h-12 bg-muted rounded-full flex items-center justify-center text-xl font-bold overflow-hidden shrink-0">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/placeholder-logo.png" alt={organizer.name} className="w-full h-full object-cover" />
-          </div>
-          <div>
-            <div className="font-bold">{organizer.name}</div>
-            <div className="flex items-center gap-1 text-xs text-muted-foreground mt-0.5">
-              <Star className="w-3 h-3 fill-warning text-warning" />
+      </SidebarCard>
+
+      <SidebarCard title="المنظّم">
+        <div className="mb-3 inline-flex items-center gap-2 rounded-full bg-[#D9F6F3] px-3 py-1 text-xs font-bold text-[#317A74]">
+          <ShieldCheck className="h-3.5 w-3.5" />
+          Certifioed
+        </div>
+        <div className="flex items-center gap-3">
+          <img src="/mock-organizer-avatar.svg" alt={organizer.name} className="h-16 w-16 rounded-full border border-[#E9E1D5] object-cover" />
+          <div className="text-right">
+            <div className="text-[1.35rem] font-extrabold text-[#141414]">{organizer.name}</div>
+            <div className="flex items-center gap-1 text-sm text-[#4C4A47]">
+              <Star className="h-4 w-4 fill-[#F4C65C] text-[#F4C65C]" />
               <span>{organizer.rating}</span>
             </div>
           </div>
         </div>
-        
-        <p className="text-sm text-muted-foreground mb-4 line-clamp-2">
-          {organizer.bio}
-        </p>
-        
-        <div className="flex gap-2">
-          <Button variant="outline" size="sm" className="flex-1 h-8 text-xs">راسل المنظّم</Button>
-          <Button variant="outline" size="sm" className="flex-1 h-8 text-xs">زيارة الصفحة</Button>
+        <p className="mt-3 text-sm leading-6 text-[#70695F]">{organizer.bio}</p>
+        <div className="mt-4 flex gap-2">
+          <button type="button" className="flex-1 rounded-full bg-[#F4F989] px-4 py-2.5 text-sm font-bold text-[#2E2B24]">راسل المنظّم</button>
+          <button type="button" className="flex-1 rounded-full border border-[#ECE5DA] bg-white px-4 py-2.5 text-sm font-bold text-[#2E2B24]">زيارة الصفحة</button>
         </div>
-      </div>
-
-    </div>
+      </SidebarCard>
+    </aside>
   );
 }
